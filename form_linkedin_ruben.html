@@ -1,5 +1,5 @@
-# Création du contenu HTML du formulaire stylé avec redirection vers Apps Scrip
-html_code = """
+# Fournir le fichier HTML corrigé à Ruben avec redirection Apps Script correcte
+corrected_html = """
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -87,12 +87,22 @@ html_code = """
         const html = await response.text();
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, "text/html");
-        const script = doc.querySelector("script");
 
+        // 1er essai : récupérer la redirection via meta refresh
+        const meta = doc.querySelector("meta[http-equiv='refresh']");
+        if (meta) {
+          const content = meta.getAttribute("content");
+          const redirectUrl = content.split("url=")[1];
+          window.location.href = redirectUrl;
+          return;
+        }
+
+        // 2e essai : via script tag
+        const script = doc.querySelector("script");
         if (script) {
           eval(script.innerText);
         } else {
-          alert("Connecté, mais pas de redirection.");
+          alert("Connecté, mais pas de redirection détectée.");
         }
       } catch (error) {
         console.error("Erreur :", error);
@@ -104,9 +114,9 @@ html_code = """
 </html>
 """
 
-# Enregistrement dans un fichier HTML
-file_path = "/mnt/data/form_linkedin_ruben.html"
-with open(file_path, "w", encoding="utf-8") as f:
-    f.write(html_code)
+# Save file
+fixed_file_path = "/mnt/data/form_linkedin_ruben_final.html"
+with open(fixed_file_path, "w", encoding="utf-8") as f:
+    f.write(corrected_html)
 
-file_path
+fixed_file_path
