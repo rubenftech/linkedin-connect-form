@@ -1,5 +1,5 @@
-# Génération d'une version complète sans iframe, autonome
-html_no_iframe = """
+# Création d'une version HTML fiable sans JS, utilisant un formulaire HTML classique (POST direct vers Apps Script)
+html_classic_post = """
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -9,35 +9,33 @@ html_no_iframe = """
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-color: #f5f5f5;
-      margin: 0;
+      background-color: #f4f4f4;
       padding: 0;
+      margin: 0;
     }
-    .main-wrapper {
-      max-width: 700px;
+    .form-container {
+      max-width: 520px;
       margin: 60px auto;
       padding: 30px;
-      background: white;
+      background-color: white;
       border-radius: 16px;
-      box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
     }
-    h1 {
+    h2 {
       text-align: center;
-      font-size: 26px;
       margin-bottom: 16px;
     }
     p {
       text-align: center;
-      font-size: 15px;
+      font-size: 14px;
       color: #555;
       margin-bottom: 24px;
     }
     label {
+      font-weight: bold;
       display: block;
       margin-top: 16px;
-      margin-bottom: 6px;
-      font-weight: bold;
-      font-size: 14px;
+      margin-bottom: 5px;
     }
     input {
       width: 100%;
@@ -47,14 +45,15 @@ html_no_iframe = """
       font-size: 14px;
     }
     button {
-      margin-top: 24px;
       width: 100%;
       padding: 14px;
       background-color: #3b82f6;
       color: white;
+      font-size: 16px;
+      font-weight: bold;
       border: none;
       border-radius: 8px;
-      font-size: 16px;
+      margin-top: 24px;
       cursor: pointer;
     }
     button:hover {
@@ -63,67 +62,31 @@ html_no_iframe = """
   </style>
 </head>
 <body>
-  <div class="main-wrapper">
-    <h1>Partagez automatiquement sur LinkedIn</h1>
-    <p>Remplissez ce court formulaire pour connecter votre compte une seule fois.<br>Vous serez ensuite redirigé vers LinkedIn pour l'autorisation.</p>
-    <form id="linkedinForm">
+  <div class="form-container">
+    <h2>Partagez automatiquement sur LinkedIn</h2>
+    <p>Remplissez ce formulaire une seule fois pour connecter votre compte. Vous serez redirigé vers LinkedIn.</p>
+    <form method="POST" action="https://script.google.com/macros/s/AKfycbxYg8BxdXMWN7DMpiVeEw_RpcPbVRlAzoNbd7tFdacD_N7l1FGiw-oQrkngnrmGI70_/exec">
       <label for="prenom">Prénom :</label>
-      <input type="text" id="prenom" name="prenom" required />
+      <input type="text" name="prenom" id="prenom" required />
 
       <label for="nom">Nom :</label>
-      <input type="text" id="nom" name="nom" required />
+      <input type="text" name="nom" id="nom" required />
 
       <label for="email">Email :</label>
-      <input type="email" id="email" name="email" required />
+      <input type="email" name="email" id="email" required />
 
       <label for="phone">Téléphone :</label>
-      <input type="text" id="phone" name="phone" required />
+      <input type="text" name="phone" id="phone" required />
 
       <button type="submit">Valider et continuer vers LinkedIn</button>
     </form>
   </div>
-
-  <script>
-    document.getElementById("linkedinForm").addEventListener("submit", async function(e) {
-      e.preventDefault();
-      const form = e.target;
-      const formData = new FormData(form);
-
-      const url = "https://script.google.com/macros/s/AKfycbxYg8BxdXMWN7DMpiVeEw_RpcPbVRlAzoNbd7tFdacD_N7l1FGiw-oQrkngnrmGI70_/exec";
-
-      try {
-        const response = await fetch(url, {
-          method: "POST",
-          body: formData
-        });
-
-        const html = await response.text();
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, "text/html");
-        const script = doc.querySelector("script");
-
-        if (script) {
-          const match = script.innerText.match(/window\\.location\\.href\\s*=\\s*['"](.*?)['"]/);
-          if (match && match[1]) {
-            window.location.href = match[1]; // ✅ Redirection directe car hors iframe
-          } else {
-            alert("Script trouvé mais pas de redirection détectée.");
-          }
-        } else {
-          alert("Connecté, mais pas de script trouvé.");
-        }
-      } catch (error) {
-        console.error("Erreur :", error);
-        alert("Erreur d'envoi. Réessaye.");
-      }
-    });
-  </script>
 </body>
 </html>
 """
 
-file_path_no_iframe = "/mnt/data/form_linkedin_ruben_no_iframe.html"
-with open(file_path_no_iframe, "w", encoding="utf-8") as f:
-    f.write(html_no_iframe)
+file_path_classic = "/mnt/data/form_linkedin_ruben_classic.html"
+with open(file_path_classic, "w", encoding="utf-8") as f:
+    f.write(html_classic_post)
 
-file_path_no_iframe
+file_path_classic
