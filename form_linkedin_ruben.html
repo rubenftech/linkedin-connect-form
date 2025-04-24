@@ -1,5 +1,5 @@
-# Fournir le fichier HTML corrigé à Ruben avec redirection Apps Script correcte
-corrected_html = """
+# Génération d'un fichier HTML avec window.open(redirectUrl) pour contourner la sandbox Wix
+html_with_window_open = """
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -88,21 +88,16 @@ corrected_html = """
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, "text/html");
 
-        // 1er essai : récupérer la redirection via meta refresh
-        const meta = doc.querySelector("meta[http-equiv='refresh']");
-        if (meta) {
-          const content = meta.getAttribute("content");
-          const redirectUrl = content.split("url=")[1];
-          window.location.href = redirectUrl;
-          return;
-        }
-
-        // 2e essai : via script tag
         const script = doc.querySelector("script");
         if (script) {
-          eval(script.innerText);
+          const match = script.innerText.match(/window\\.location\\.href\\s*=\\s*['"](.*?)['"]/);
+          if (match && match[1]) {
+            window.open(match[1], "_blank");  // ✅ Ouvre dans un nouvel onglet
+          } else {
+            alert("Script trouvé mais pas de redirection détectée.");
+          }
         } else {
-          alert("Connecté, mais pas de redirection détectée.");
+          alert("Connecté, mais pas de script trouvé.");
         }
       } catch (error) {
         console.error("Erreur :", error);
@@ -114,9 +109,9 @@ corrected_html = """
 </html>
 """
 
-# Save file
-fixed_file_path = "/mnt/data/form_linkedin_ruben_final.html"
-with open(fixed_file_path, "w", encoding="utf-8") as f:
-    f.write(corrected_html)
+# Enregistrement dans un fichier HTML final
+file_path_open = "/mnt/data/form_linkedin_ruben_window_open.html"
+with open(file_path_open, "w", encoding="utf-8") as f:
+    f.write(html_with_window_open)
 
-fixed_file_path
+file_path_open
