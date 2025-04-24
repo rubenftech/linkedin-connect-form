@@ -1,5 +1,4 @@
-# Création d'une version HTML fiable sans JS, utilisant un formulaire HTML classique (POST direct vers Apps Script)
-html_classic_post = """
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -83,10 +82,4 @@ html_classic_post = """
   </div>
 </body>
 </html>
-"""
 
-file_path_classic = "/mnt/data/form_linkedin_ruben_classic.html"
-with open(file_path_classic, "w", encoding="utf-8") as f:
-    f.write(html_classic_post)
-
-file_path_classic
