@@ -1,4 +1,7 @@
+from pathlib import Path
 
+# Code HTML à enregistrer
+html_code = """
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -64,47 +67,51 @@
   <div class="form-container">
     <h2>Partagez automatiquement sur LinkedIn</h2>
     <p>Remplissez ce formulaire une seule fois pour connecter votre compte. Vous serez redirigé vers LinkedIn.</p>
-<form id="linkedinForm">
-  <label for="prenom">Prénom :</label>
-  <input type="text" name="prenom" id="prenom" required />
+    <form id="linkedinForm">
+      <label for="prenom">Prénom :</label>
+      <input type="text" name="prenom" id="prenom" required />
 
-  <label for="nom">Nom :</label>
-  <input type="text" name="nom" id="nom" required />
+      <label for="nom">Nom :</label>
+      <input type="text" name="nom" id="nom" required />
 
-  <label for="email">Email :</label>
-  <input type="email" name="email" id="email" required />
+      <label for="email">Email :</label>
+      <input type="email" name="email" id="email" required />
 
-  <label for="phone">Téléphone :</label>
-  <input type="text" name="phone" id="phone" required />
+      <label for="phone">Téléphone :</label>
+      <input type="text" name="phone" id="phone" required />
 
-  <button type="submit">Valider et continuer vers LinkedIn</button>
-</form>
-
-<script>
-  document.getElementById("linkedinForm").addEventListener("submit", async function(e) {
-    e.preventDefault();
-    const form = e.target;
-    const formData = new FormData(form);
-
-    const url = "https://script.google.com/macros/s/AKfycbxYg8BxdXMWN7DMpiVeEw_RpcPbVRlAzoNbd7tFdacD_N7l1FGiw-oQrkngnrmGI70_/exec";
-
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        body: formData
-      });
-
-      const redirectUrl = await response.text();
-      window.location.href = redirectUrl;
-
-    } catch (error) {
-      console.error("Erreur :", error);
-      alert("Erreur d'envoi. Réessaye.");
-    }
-  });
-</script>
-
+      <button type="submit">Valider et continuer vers LinkedIn</button>
+    </form>
   </div>
+
+  <script>
+    document.getElementById("linkedinForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+
+      const url = "https://script.google.com/macros/s/AKfycbxYg8BxdXMWN7DMpiVeEw_RpcPbVRlAzoNbd7tFdacD_N7l1FGiw-oQrkngnrmGI70_/exec";
+
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          body: formData
+        });
+
+        const redirectUrl = await response.text();
+        window.location.href = redirectUrl;
+
+      } catch (error) {
+        console.error("Erreur :", error);
+        alert("Erreur d'envoi. Réessaye.");
+      }
+    });
+  </script>
 </body>
 </html>
+"""
 
+# Sauvegarde
+file_path = "/mnt/data/form_linkedin_final_redirect.html"
+Path(file_path).write_text(html_code, encoding="utf-8")
+file_path
