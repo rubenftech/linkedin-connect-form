@@ -1,7 +1,3 @@
-from pathlib import Path
-
-# Code HTML à enregistrer
-html_code = """
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -23,7 +19,7 @@ html_code = """
       border-radius: 16px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
     }
-    h2 {
+    h1, h2 {
       text-align: center;
       margin-bottom: 16px;
     }
@@ -65,9 +61,13 @@ html_code = """
 </head>
 <body>
   <div class="form-container">
+    <h1 id="companyNameTitle"></h1> <!-- Le nom de la compagnie -->
     <h2>Partagez automatiquement sur LinkedIn</h2>
-    <p>Remplissez ce formulaire une seule fois pour connecter votre compte. Vous serez redirigé vers LinkedIn.</p>
+    <p>Remplissez ce formulaire pour connecter votre compte. Vous serez redirigé vers LinkedIn.</p>
+
     <form id="linkedinForm">
+      <input type="hidden" name="companyId" id="companyId" value="" />
+
       <label for="prenom">Prénom :</label>
       <input type="text" name="prenom" id="prenom" required />
 
@@ -85,6 +85,14 @@ html_code = """
   </div>
 
   <script>
+    // Configuration
+    const COMPANY_ID = "CompanyA"; // 👈 ici tu changes l'ID de la compagnie
+    const COMPANY_NAME = "Mon Entreprise"; // 👈 ici tu changes le nom affiché
+
+    // Mettre le nom et ID dans la page
+    document.getElementById("companyNameTitle").textContent = COMPANY_NAME;
+    document.getElementById("companyId").value = COMPANY_ID;
+
     document.getElementById("linkedinForm").addEventListener("submit", async function(e) {
       e.preventDefault();
       const form = e.target;
@@ -109,9 +117,3 @@ html_code = """
   </script>
 </body>
 </html>
-"""
-
-# Sauvegarde
-file_path = "/mnt/data/form_linkedin_final_redirect.html"
-Path(file_path).write_text(html_code, encoding="utf-8")
-file_path
