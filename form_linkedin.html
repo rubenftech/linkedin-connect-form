@@ -8,32 +8,30 @@
     body {
       font-family: 'Segoe UI', sans-serif;
       background-color: #f4f4f4;
-      padding: 0;
       margin: 0;
+      padding: 0;
     }
     .form-container {
       max-width: 520px;
       margin: 60px auto;
       padding: 30px;
-      background-color: white;
+      background: white;
       border-radius: 16px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
     }
-    h2 {
+    h2, p {
       text-align: center;
-      margin-bottom: 16px;
+      margin: 0 0 24px;
     }
     p {
-      text-align: center;
       font-size: 14px;
       color: #555;
-      margin-bottom: 24px;
     }
     label {
-      font-weight: bold;
       display: block;
       margin-top: 16px;
       margin-bottom: 5px;
+      font-weight: bold;
     }
     input {
       width: 100%;
@@ -47,8 +45,8 @@
       padding: 14px;
       background-color: #3b82f6;
       color: white;
-      font-size: 16px;
       font-weight: bold;
+      font-size: 16px;
       border: none;
       border-radius: 8px;
       margin-top: 24px;
@@ -61,70 +59,74 @@
 </head>
 <body>
 
-  <div class="form-container">
-    <h2>Connexion LinkedIn</h2>
-    <p>Remplissez ce formulaire pour connecter votre compte LinkedIn.</p>
+<div class="form-container">
+  <h2>Connexion LinkedIn</h2>
+  <p>Remplissez ce formulaire pour connecter votre compte LinkedIn.</p>
 
-    <form id="linkedinForm">
-      <label for="companyId">Nom de votre entreprise :</label>
-      <input type="text" name="companyId" id="companyId" required />
+  <form id="linkedinForm">
+    <label for="companyId">Identifiant Entreprise :</label>
+    <input type="text" id="companyId" name="companyId" required />
 
-      <label for="prenom">Prénom :</label>
-      <input type="text" name="prenom" id="prenom" required />
+    <label for="prenom">Prénom :</label>
+    <input type="text" id="prenom" name="prenom" required />
 
-      <label for="nom">Nom :</label>
-      <input type="text" name="nom" id="nom" required />
+    <label for="nom">Nom :</label>
+    <input type="text" id="nom" name="nom" required />
 
-      <label for="email">Email :</label>
-      <input type="email" name="email" id="email" required />
+    <label for="email">Email :</label>
+    <input type="email" id="email" name="email" required />
 
-      <label for="phone">Téléphone :</label>
-      <input type="text" name="phone" id="phone" required />
+    <label for="phone">Téléphone :</label>
+    <input type="text" id="phone" name="phone" required />
 
-      <button type="submit">Valider et continuer</button>
-    </form>
-  </div>
+    <button type="submit">Se connecter via LinkedIn</button>
+  </form>
+</div>
 
-  <script>
-    // Fonction pour lire les paramètres d'URL
-    function getURLParameter(name) {
-      name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-      const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-      const results = regex.exec(location.search);
-      return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+<script>
+  // Fonction pour extraire les paramètres d'URL
+  function getURLParameter(name) {
+    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+    const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+    const results = regex.exec(window.location.href);
+    return results ? decodeURIComponent(results[1].replace(/\+/g, ' ')) : '';
+  }
+
+  // Pré-remplir le champ companyId si trouvé dans l'URL
+  window.addEventListener('DOMContentLoaded', () => {
+    const companyId = getURLParameter('companyId');
+    if (companyId) {
+      document.getElementById('companyId').value = companyId;
     }
+  });
 
-    // Pré-remplir l'entreprise si companyId est dans l'URL
-    window.onload = function() {
-      const companyId = getURLParameter('companyId');
-      if (companyId) {
-        document.getElementById('companyId').value = companyId;
+  // Envoi du formulaire
+  document.getElementById('linkedinForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+
+    const url = "https://script.google.com/macros/s/AKfycby9jBebkTkeRIN-S6gk2LdUx0AYJCOjr8Hklt4C0Khq-zSKvnKOM9u1UMRgjKDfAemJ3g/exec";
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        body: formData
+      });
+
+      if (!response.ok) {
+        throw new Error('Erreur de réseau');
       }
-    };
 
-    // Envoi du formulaire
-    document.getElementById("linkedinForm").addEventListener("submit", async function(e) {
-      e.preventDefault();
-      const form = e.target;
-      const formData = new FormData(form);
+      const redirectUrl = await response.text();
+      window.location.href = redirectUrl;
 
-      const url = "https://script.google.com/macros/s/AKfycbxYg8BxdXMWN7DMpiVeEw_RpcPbVRlAzoNbd7tFdacD_N7l1FGiw-oQrkngnrmGI70_/exec";
-
-      try {
-        const response = await fetch(url, {
-          method: "POST",
-          body: formData
-        });
-
-        const redirectUrl = await response.text();
-        window.location.href = redirectUrl;
-
-      } catch (error) {
-        console.error("Erreur :", error);
-        alert("Erreur d'envoi. Réessayez.");
-      }
-    });
-  </script>
+    } catch (error) {
+      console.error("Erreur lors de l'envoi :", error);
+      alert("Erreur lors de l'envoi. Merci de réessayer.");
+    }
+  });
+</script>
 
 </body>
 </html>
